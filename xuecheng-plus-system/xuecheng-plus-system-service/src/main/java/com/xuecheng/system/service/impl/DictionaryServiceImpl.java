@@ -23,10 +23,7 @@ public class DictionaryServiceImpl extends ServiceImpl<DictionaryMapper, Diction
 
     @Override
     public List<Dictionary> queryAll() {
-
         List<Dictionary> list = this.list();
-
-
         return list;
     }
 

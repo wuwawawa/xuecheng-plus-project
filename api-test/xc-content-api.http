@@ -5,11 +5,12 @@ Content-Type: application/json
 {
   "auditStatus": "202004",
   "courseName": "java",
-  "publishStatus":""
+  "publishStatus": ""
 }
 
 ### 查询课程分类
 GET {{content_host}}/content/course-category/tree-nodes
+Content-Type: application/json
 
 ### 新增课程
 POST {{content_host}}/content/course
@@ -17,10 +18,10 @@ Content-Type: application/json
 
 {
   "charge": "201001",
-  "price": 10,
-  "originalPrice":100,
-  "qq": "22333",
-  "wechat": "223344",
+  "price": 98,
+  "originalPrice": 198,
+  "qq": "2233311",
+  "wechat": "22334411",
   "phone": "13333333",
   "validDays": 365,
   "mt": "1-1",
@@ -31,5 +32,18 @@ Content-Type: application/json
   "users": "初级人员",
   "tags": "tagstagstags",
   "grade": "204001",
-  "description": "java网络编程高级java网络编程高级java网络编程高级"
+  "description": "test12332131232132"
 }
+
+### 课程查询
+GET {{content_host}}/content/course/40
+Content-Type: application/json
+
+### 课程计划查询
+GET {{content_host}}/content/teachplan/117/tree-nodes
+Content-Type: application/json
+
+### 查询课程树形结构
+GET {{content_host}}/content/teachplan/22/tree-nodes
+Content-Type: application/json
+

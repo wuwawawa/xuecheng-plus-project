@@ -9,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 /**
- * @author Mr.M
+ * @author lmy
  * @version 1.0
  * @description TODO
- * @date 2023/2/12 9:24
+ * @date 2023/3/12 9:24
  */
 @SpringBootTest
 public class CourseCategoryServiceTests {

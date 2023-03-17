@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * @author Mr.M
+ * @author lmy
  * @version 1.0
  * @description 课程分类相关接口
- * @date 2023/2/12 11:54
+ * @date 2023/3/12 11:54
  */
-@Api(value = "课程分类信息接口",tags = "课程分类信息接口")
+@Api(value = "课程分类信息接口", tags = "课程分类信息接口")
 @RestController
 public class CourseCategoryController {
 

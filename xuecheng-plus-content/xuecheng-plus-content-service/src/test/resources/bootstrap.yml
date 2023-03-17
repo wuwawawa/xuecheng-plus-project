@@ -4,9 +4,9 @@ spring:
     name: content-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://8.130.68.59:13306/xc_content?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/xc_content?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
     username: root
-    password: yoot1
+    password: lmyandlyf0223
 # 日志文件配置路径
 logging:
   config: classpath:log4j2-dev.xml
