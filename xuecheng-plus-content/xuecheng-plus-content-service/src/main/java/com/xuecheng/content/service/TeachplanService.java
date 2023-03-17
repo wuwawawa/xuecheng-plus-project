@@ -18,12 +18,27 @@ public interface TeachplanService {
      * @param courseId 课程计划
      * @return
      */
-    public List<TeachplanDto> findTeachplanTree(Long courseId);
+    List<TeachplanDto> findTeachplanTree(Long courseId);
 
     /**
      * 新增/修改/保存课程计划
      *
      * @param saveTeachplanDto
      */
-    public void saveTeachplan(SaveTeachplanDto saveTeachplanDto);
+    void saveTeachplan(SaveTeachplanDto saveTeachplanDto);
+
+    /**
+     * 课程计划删除
+     *
+     * @param teachplanId
+     */
+    void deleteTeachplan(Long teachplanId);
+
+    /**
+     * 课程计划排序移动
+     *
+     * @param moveType
+     * @param teachplanId
+     */
+    void orderByTeachplan(String moveType, Long teachplanId);
 }
