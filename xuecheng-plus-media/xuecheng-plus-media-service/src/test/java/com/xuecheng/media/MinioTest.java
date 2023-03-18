@@ -23,8 +23,8 @@ public class MinioTest {
 
     MinioClient minioClient =
             MinioClient.builder()
-                    .endpoint("http://8.130.68.59:9000")
-                    .credentials("XSnwc5YwnkfA4THp", "k28FaxTATLIXTeTfhm2vo7ip77wAxdLD")
+                    .endpoint("http://110.42.143.32:9000")
+                    .credentials("244g6XDcocjDhnwK", "kQ6wo7wf4W58KXP32ewxHQIcKg03tR4a")
                     .build();
 
     @Test
@@ -41,6 +41,7 @@ public class MinioTest {
         minioClient.uploadObject(uploadObjectArgs);
 
     }
+
     //删除文件
     @Test
     public void test_delete() throws Exception {
@@ -60,25 +61,18 @@ public class MinioTest {
         FilterInputStream inputStream = minioClient.getObject(getObjectArgs);
         //指定输出流
         FileOutputStream outputStream = new FileOutputStream(new File("/Users/fortune/Downloads/代码整洁之道.pdf"));
-        IOUtils.copy(inputStream,outputStream);
+        IOUtils.copy(inputStream, outputStream);
 
         //校验文件的完整性对文件的内容进行md5
         FileInputStream fileInputStream1 = new FileInputStream(new File("/Users/fortune/代码整洁之道.pdf"));
         String source_md5 = DigestUtils.md5Hex(fileInputStream1);
         FileInputStream fileInputStream = new FileInputStream(new File("/Users/fortune/Downloads/代码整洁之道.pdf"));
         String local_md5 = DigestUtils.md5Hex(fileInputStream);
-        if(source_md5.equals(local_md5)){
+        if (source_md5.equals(local_md5)) {
             System.out.println("下载成功");
         }
 
     }
-
-
-
-
-
-
-
 
 
 }
