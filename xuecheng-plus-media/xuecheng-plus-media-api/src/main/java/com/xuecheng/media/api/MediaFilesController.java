@@ -1,8 +1,9 @@
 package com.xuecheng.media.api;
 
-
+import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
+import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
@@ -15,52 +16,58 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
+ * 媒资文件管理接口
+ *
  * @author Mr.M
  * @version 1.0
- * @description 媒资文件管理接口
- * @date 2022/9/6 11:29
+ * @since 2022/9/6 11:29
  */
 @Api(value = "媒资文件管理接口", tags = "媒资文件管理接口")
 @RestController
 public class MediaFilesController {
-
-
     @Autowired
-    MediaFileService mediaFileService;
+    private MediaFileService mediaFileService;
 
     @ApiOperation("媒资列表查询接口")
     @PostMapping("/files")
     public PageResult<MediaFiles> list(PageParams pageParams, @RequestBody QueryMediaParamsDto queryMediaParamsDto) {
         Long companyId = 1232141425L;
-        return mediaFileService.queryMediaFiels(companyId, pageParams, queryMediaParamsDto);
-
+        return mediaFileService.queryMediaFiles(companyId, pageParams, queryMediaParamsDto);
     }
 
-    @ApiOperation("上传图片")
+    @ApiOperation("文件上传接口")
     @RequestMapping(value = "/upload/coursefile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile filedata) throws IOException {
-
-        //准备上传文件的信息
-        UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
-        //原始文件名称
-        uploadFileParamsDto.setFilename(filedata.getOriginalFilename());
-        //文件大小
-        uploadFileParamsDto.setFileSize(filedata.getSize());
-        //文件类型
-        uploadFileParamsDto.setFileType("001001");
-        //创建一个临时文件
-        File tempFile = File.createTempFile("minio", ".temp");
-        filedata.transferTo(tempFile);
+    public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile filedata,
+                                      @RequestParam(value = "folder", required = false) String folder,
+                                      @RequestParam(value = "objectName", required = false) String objectName) {
         Long companyId = 1232141425L;
-        //文件路径
-        String localFilePath = tempFile.getAbsolutePath();
+        UploadFileParamsDto params = new UploadFileParamsDto();
+        String contentType = filedata.getContentType();
+        params.setContentType(contentType);
+        params.setFileSize(filedata.getSize());
+        assert contentType != null;
+        if (contentType.contains("image")) {
+            params.setFileType("001001");
+        } else {
+            params.setFileType("001003");
+        }
+        params.setFilename(filedata.getOriginalFilename());
+        params.setRemark("");
+        try {
+            return mediaFileService.uploadFile(companyId, params, filedata.getBytes(), folder, objectName);
+        } catch (IOException e) {
+            throw new XueChengPlusException("文件上传过程中出错");
+        }
+    }
 
-        //调用service上传图片
-        return mediaFileService.uploadFile(companyId, uploadFileParamsDto, localFilePath);
+    @ApiOperation("预览文件")
+    @GetMapping("/preview/{mediaId}")
+    public RestResponse<String> getPlayUrlByMediaId(@PathVariable String mediaId) {
+        MediaFiles mediaFiles = mediaFileService.getFileById(mediaId);
+        return RestResponse.success(mediaFiles.getUrl());
     }
 
 }

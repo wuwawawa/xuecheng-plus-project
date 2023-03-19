@@ -4,10 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 
 /**
- * @author Mr.M
- * @version 1.0
- * @description 文件信息
- * @date 2023/2/17 15:09
+ * @description 上传普通文件请求参数
  */
 @Data
 @ToString
@@ -18,9 +15,13 @@ public class UploadFileParamsDto {
      */
     private String filename;
 
+    /**
+     * 文件content-type
+     */
+    private String contentType;
 
     /**
-     * 文件类型（文档，音频，视频）
+     * 文件类型（文档，图片，视频）
      */
     private String fileType;
     /**
@@ -32,13 +33,14 @@ public class UploadFileParamsDto {
      * 标签
      */
     private String tags;
+
     /**
      * 上传人
      */
     private String username;
+
     /**
      * 备注
      */
     private String remark;
-
 }
