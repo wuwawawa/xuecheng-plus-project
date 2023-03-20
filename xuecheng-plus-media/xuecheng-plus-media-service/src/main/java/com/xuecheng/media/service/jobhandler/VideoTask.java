@@ -46,6 +46,7 @@ public class VideoTask {
         // 未查询到待处理任务，结束方法
         if (mediaProcessList == null || mediaProcessList.size() == 0) {
             log.debug("查询到的待处理任务数为0");
+            System.out.println("查询到的待处理任务数为0");
             return;
         }
         // 要处理的任务数

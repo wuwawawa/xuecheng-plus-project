@@ -1,8 +1,10 @@
 package com.xuecheng.media.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.xuecheng.media.mapper.MediaFilesMapper;
 import com.xuecheng.media.mapper.MediaProcessHistoryMapper;
 import com.xuecheng.media.mapper.MediaProcessMapper;
+import com.xuecheng.media.model.po.MediaFiles;
 import com.xuecheng.media.model.po.MediaProcess;
 import com.xuecheng.media.model.po.MediaProcessHistory;
 import com.xuecheng.media.service.MediaFileProcessService;
@@ -19,6 +21,8 @@ import java.util.List;
 @Service
 public class MediaFileProcessServiceImpl implements MediaFileProcessService {
 
+    @Autowired
+    MediaFilesMapper mediaFilesMapper;
     @Autowired
     private MediaProcessHistoryMapper mediaProcessHistoryMapper;
     @Autowired
@@ -51,6 +55,15 @@ public class MediaFileProcessServiceImpl implements MediaFileProcessService {
         }
         // 任务成功，将其从待处理任务表中删除，同时新增历史处理表记录
         if ("2".equals(status)) {
+
+            //文件表记录
+            MediaFiles mediaFiles = mediaFilesMapper.selectById(fileId);
+            //更新media_file表中的url
+
+            mediaFiles.setUrl(url);
+
+            mediaFilesMapper.updateById(mediaFiles);
+            //更新process表记录
             mediaProcess.setStatus("2");
             mediaProcess.setUrl(url);
             mediaProcess.setFinishDate(LocalDateTime.now());

@@ -20,21 +20,6 @@ public class Mp4VideoUtil extends VideoUtil {
         this.mp4folder_path = mp4folder_path;
     }
 
-    public static void main(String[] args) throws IOException {
-        //ffmpeg的路径
-        String ffmpeg_path = "/Users/fortune/CODE/SpringCloud/xuechengzaixian/ffmpeg";//ffmpeg的安装位置
-        //源avi视频的路径
-        String video_path = "/Users/fortune/Desktop/test20.avi";
-        //转换后mp4文件的名称
-        String mp4_name = "test20.mp4";
-        //转换后mp4文件的路径
-        String mp4_path = "/Users/fortune/Desktop/test20.mp4";
-        //创建工具类对象
-        Mp4VideoUtil videoUtil = new Mp4VideoUtil(ffmpeg_path, video_path, mp4_name, mp4_path);
-        //开始视频转换，成功将返回success
-        String s = videoUtil.generateMp4();
-        System.out.println(s);
-    }
 
     //清除已生成的mp4
     private void clear_mp4(String mp4_path) {
