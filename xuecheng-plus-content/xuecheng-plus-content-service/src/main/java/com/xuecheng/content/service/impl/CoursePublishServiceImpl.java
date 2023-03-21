@@ -16,14 +16,25 @@ import com.xuecheng.content.model.po.CoursePublishPre;
 import com.xuecheng.content.service.CourseBaseInfoService;
 import com.xuecheng.content.service.CoursePublishService;
 import com.xuecheng.content.service.TeachplanService;
+import com.xuecheng.messagesdk.model.po.MqMessage;
+import com.xuecheng.messagesdk.service.MqMessageService;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -31,16 +42,25 @@ import java.util.List;
 public class CoursePublishServiceImpl implements CoursePublishService {
     @Autowired
     private CourseBaseInfoService courseBaseInfoService;
+
     @Autowired
     private TeachplanService teachplanService;
+
     @Autowired
     private CourseMarketMapper courseMarketMapper;
+
     @Autowired
     private CoursePublishPreMapper coursePublishPreMapper;
+
     @Autowired
     private CourseBaseMapper courseBaseMapper;
+
     @Autowired
     private CoursePublishMapper coursePublishMapper;
+
+    @Autowired
+    private MqMessageService mqMessageService;
+
 
     @Override
     public CoursePreviewDto getCoursePreviewInfo(Long courseId) {
@@ -164,10 +184,63 @@ public class CoursePublishServiceImpl implements CoursePublishService {
      * @param courseId 课程id
      */
     private void saveCoursePublishMessage(Long courseId) {
-//        MqMessage mqMessage = mqMessageService.addMessage("course_publish", String.valueOf(courseId), null, null);
-//        if (mqMessage == null) {
-//            XueChengPlusException.cast("添加消息记录失败");
+        MqMessage mqMessage = mqMessageService.addMessage("course_publish", String.valueOf(courseId), null, null);
+        if (mqMessage == null) {
+            XueChengPlusException.cast("添加消息记录失败");
+        }
+    }
+
+    @Override
+    public File generateCourseHtml(Long courseId) {
+        File htmlFile = null;
+        try {
+            // 1. 创建一个Freemarker配置
+            Configuration configuration = new Configuration(Configuration.getVersion());
+            // 2. 告诉Freemarker在哪里可以找到模板文件
+            String classPath = this.getClass().getResource("/").getPath();
+            configuration.setDirectoryForTemplateLoading(new File(classPath + "/templates/"));
+            configuration.setDefaultEncoding("utf-8");
+            // 3. 创建一个模型数据，与模板文件中的数据模型保持一致，这里是CoursePreviewDto类型
+            CoursePreviewDto coursePreviewDto = this.getCoursePreviewInfo(courseId);
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("model", coursePreviewDto);
+            // 4. 加载模板文件
+            Template template = configuration.getTemplate("course_template.ftl");
+            // 5. 将数据模型应用于模板
+            String content = FreeMarkerTemplateUtils.processTemplateIntoString(template, map);
+            // 5.1 将静态文件内容输出到文件中
+            InputStream inputStream = IOUtils.toInputStream(content);
+            htmlFile = File.createTempFile("course", ".html");
+            FileOutputStream fos = new FileOutputStream(htmlFile);
+            IOUtils.copy(inputStream, fos);
+        } catch (Exception e) {
+            log.debug("课程静态化失败：{}", e.getMessage());
+            e.printStackTrace();
+        }
+        return htmlFile;
+    }
+
+    @Override
+    public void uploadCourseHtml(Long courseId, File file) {
+//        MultipartFile multipartFile = MultipartSupportConfig.getMultipartFile(file);
+//        String course = mediaServiceClient.upload(multipartFile, "/course/", courseId + ".html");
+//        if (course == null) {
+//            XueChengPlusException.cast("远程调用媒资服务上传文件失败");
 //        }
     }
 
+    @Override
+    public Boolean saveCourseIndex(Long courseId) {
+//        // 1. 取出课程发布信息
+//        CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
+//        // 2. 拷贝至课程索引对象
+//        CourseIndex courseIndex = new CourseIndex();
+//        BeanUtils.copyProperties(coursePublish, courseIndex);
+//        // 3. 远程调用搜索服务API，添加课程索引信息
+//        Boolean result = searchServiceClient.add(courseIndex);
+//        if (!result) {
+//            XueChengPlusException.cast("添加索引失败");
+//        }
+        return true;
+    }
 }
