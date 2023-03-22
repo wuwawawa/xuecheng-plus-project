@@ -2,6 +2,8 @@ package com.xuecheng.content.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.xuecheng.base.exception.XueChengPlusException;
+import com.xuecheng.content.config.MultipartSupportConfig;
+import com.xuecheng.content.feignclient.MediaServiceClient;
 import com.xuecheng.content.mapper.CourseBaseMapper;
 import com.xuecheng.content.mapper.CourseMarketMapper;
 import com.xuecheng.content.mapper.CoursePublishMapper;
@@ -32,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -41,26 +44,21 @@ import java.util.List;
 @Service
 public class CoursePublishServiceImpl implements CoursePublishService {
     @Autowired
+    MediaServiceClient mediaServiceClient;
+    @Autowired
     private CourseBaseInfoService courseBaseInfoService;
-
     @Autowired
     private TeachplanService teachplanService;
-
     @Autowired
     private CourseMarketMapper courseMarketMapper;
-
     @Autowired
     private CoursePublishPreMapper coursePublishPreMapper;
-
     @Autowired
     private CourseBaseMapper courseBaseMapper;
-
     @Autowired
     private CoursePublishMapper coursePublishMapper;
-
     @Autowired
     private MqMessageService mqMessageService;
-
 
     @Override
     public CoursePreviewDto getCoursePreviewInfo(Long courseId) {
@@ -222,11 +220,18 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
     @Override
     public void uploadCourseHtml(Long courseId, File file) {
-//        MultipartFile multipartFile = MultipartSupportConfig.getMultipartFile(file);
-//        String course = mediaServiceClient.upload(multipartFile, "/course/", courseId + ".html");
-//        if (course == null) {
-//            XueChengPlusException.cast("远程调用媒资服务上传文件失败");
-//        }
+
+        try {
+            MultipartFile multipartFile = MultipartSupportConfig.getMultipartFile(file);
+            String course = mediaServiceClient.upload(multipartFile, "course/" + courseId + ".html");
+            if (course == null) {
+                log.debug("远程调用走降级逻辑");
+                XueChengPlusException.cast("远程调用媒资服务上传文件失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

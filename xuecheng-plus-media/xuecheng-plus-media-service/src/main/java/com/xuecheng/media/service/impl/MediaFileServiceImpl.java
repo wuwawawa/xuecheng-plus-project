@@ -20,7 +20,6 @@ import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.UploadObjectArgs;
-import io.minio.errors.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
@@ -31,14 +30,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -85,6 +81,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         return contentType;
     }
 
+
     /**
      * @param companyId           机构id
      * @param uploadFileParamsDto 文件信息
@@ -103,11 +100,13 @@ public class MediaFileServiceImpl implements MediaFileService {
             folder = folder + "/";
         }
         if (StringUtils.isEmpty(objectName)) {
+
             // 如果文件名为空，则设置其默认文件名为文件的md5码 + 文件后缀名
             String filename = uploadFileParamsDto.getFilename();
             objectName = fileMD5 + filename.substring(filename.lastIndexOf("."));
+            objectName = folder + objectName;
         }
-        objectName = folder + objectName;
+
         try {
             addMediaFilesToMinIO(bytes, bucket_files, objectName);
             MediaFiles mediaFiles = currentProxy.addMediaFilesToDB(companyId, uploadFileParamsDto, objectName, fileMD5, bucket_files);
@@ -151,6 +150,11 @@ public class MediaFileServiceImpl implements MediaFileService {
             }
             // 查阅数据字典，002003表示审核通过
             mediaFiles.setAuditStatus("002003");
+            // 上传网页时，将文件标签设为课程网页
+            if (mediaFiles.getFilename().contains(".html")) {
+                mediaFiles.setTags("课程静态网页");
+            }
+
         }
         int insert = mediaFilesMapper.insert(mediaFiles);
         if (insert <= 0) {
@@ -484,4 +488,6 @@ public class MediaFileServiceImpl implements MediaFileService {
         PageResult<MediaFiles> mediaListResult = new PageResult<>(list, total, pageParams.getPageNo(), pageParams.getPageSize());
         return mediaListResult;
     }
+
+
 }

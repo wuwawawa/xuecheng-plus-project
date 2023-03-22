@@ -7,6 +7,7 @@ import com.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
 import com.xuecheng.media.model.po.MediaFiles;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -109,4 +110,6 @@ public interface MediaFileService {
      * @return
      */
     String getFilePathByMd5(String fileMd5, String extension);
+
+
 }
