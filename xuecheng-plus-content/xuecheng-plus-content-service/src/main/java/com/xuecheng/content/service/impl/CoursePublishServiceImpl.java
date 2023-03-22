@@ -3,7 +3,9 @@ package com.xuecheng.content.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.content.config.MultipartSupportConfig;
+import com.xuecheng.content.feignclient.CourseIndex;
 import com.xuecheng.content.feignclient.MediaServiceClient;
+import com.xuecheng.content.feignclient.SearchServiceClient;
 import com.xuecheng.content.mapper.CourseBaseMapper;
 import com.xuecheng.content.mapper.CourseMarketMapper;
 import com.xuecheng.content.mapper.CoursePublishMapper;
@@ -59,6 +61,9 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     private CoursePublishMapper coursePublishMapper;
     @Autowired
     private MqMessageService mqMessageService;
+    @Autowired
+    private SearchServiceClient searchServiceClient;
+
 
     @Override
     public CoursePreviewDto getCoursePreviewInfo(Long courseId) {
@@ -236,16 +241,16 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
     @Override
     public Boolean saveCourseIndex(Long courseId) {
-//        // 1. 取出课程发布信息
-//        CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
-//        // 2. 拷贝至课程索引对象
-//        CourseIndex courseIndex = new CourseIndex();
-//        BeanUtils.copyProperties(coursePublish, courseIndex);
-//        // 3. 远程调用搜索服务API，添加课程索引信息
-//        Boolean result = searchServiceClient.add(courseIndex);
-//        if (!result) {
-//            XueChengPlusException.cast("添加索引失败");
-//        }
+        // 1. 取出课程发布信息
+        CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
+        // 2. 拷贝至课程索引对象
+        CourseIndex courseIndex = new CourseIndex();
+        BeanUtils.copyProperties(coursePublish, courseIndex);
+        // 3. 远程调用搜索服务API，添加课程索引信息
+        Boolean result = searchServiceClient.add(courseIndex);
+        if (!result) {
+            XueChengPlusException.cast("添加索引失败");
+        }
         return true;
     }
 }

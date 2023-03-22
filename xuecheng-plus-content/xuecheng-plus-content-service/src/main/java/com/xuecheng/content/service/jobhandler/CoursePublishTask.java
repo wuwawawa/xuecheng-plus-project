@@ -38,7 +38,7 @@ public class CoursePublishTask extends MessageProcessAbstract {
         // TODO 二阶段：存储到Redis
 
         // TODO 三阶段：存储到ElasticSearch
-        //saveCourseIndex(mqMessage, Long.valueOf(courseId));
+        saveCourseIndex(mqMessage, Long.valueOf(courseId));
         // 三阶段都成功，返回true
         return true;
     }
