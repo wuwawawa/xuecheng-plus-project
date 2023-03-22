@@ -36,7 +36,8 @@ Content-Type: application/json
 }
 
 ### 课程查询
-GET {{gateway_host}}/content/course/40
+GET {{gateway_host}}/content/course/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieHVlY2hlbmctcGx1cyJdLCJ1c2VyX25hbWUiOiJ6aGFuZ3NhbiIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE2Nzk1MDQ0MjcsImF1dGhvcml0aWVzIjpbInAxIl0sImp0aSI6IjcwOTBlYzUyLWQ2OTUtNDg1OS04NGYwLWRlZmFjOGI2MDg2MyIsImNsaWVudF9pZCI6IlhjV2ViQXBwIn0.wKfnJ7VjexZfybsWLP04mH67KiAVsbYEUVD6cFKwpp
 
 ### 课程计划查询
 GET {{gateway_host}}/content/teachplan/117/tree-nodes
