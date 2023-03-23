@@ -1,0 +1,5 @@
+### 验证码
+POST {{gateway_host}}/checkcode/pic
+
+### 校验验证码
+POST {{gateway_host}}/checkcode/verify?key=checkcode:1a34127eb04b4c389899d1cd27e0d37d&code=FSTD

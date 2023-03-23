@@ -6,10 +6,12 @@ POST {{auth_host}}/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&gr
 
 
 ### 密码模式
-POST {{auth_host}}/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&grant_type=password&username=zhangsan&password=123
+POST {{auth_host}}/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&grant_type=password&username=admin&password=111111
 
 
 ### 校验JWT令牌
-POST {{auth_host}}/auth/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieHVlY2hlbmctcGx1cyJdLCJ1c2VyX25hbWUiOiJ6aGFuZ3NhbiIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE2Nzk1MDIwMjMsImF1dGhvcml0aWVzIjpbInAxIl0sImp0aSI6Ijk5MTYxZTM3LTI3NGMtNGViNi05NjBmLWI3YTVlYmFhMDAyOSIsImNsaWVudF9pZCI6IlhjV2ViQXBwIn0.8SOQJ_yRn8Cj9pfMmxGGlhpnvoTb0ZeiSqfMqV9dhpc
+POST {{auth_host}}/auth/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieHVlY2hlbmctcGx1cyJdLCJ1c2VyX25hbWUiOiJ7XCJjcmVhdGVUaW1lXCI6XCIyMDIyLTA5LTI4VDA4OjMyOjAzXCIsXCJpZFwiOlwiNDhcIixcIm5hbWVcIjpcIuezu-e7n-euoeeQhuWRmFwiLFwic2V4XCI6XCIxXCIsXCJzdGF0dXNcIjpcIjFcIixcInVzZXJuYW1lXCI6XCJhZG1pblwiLFwidXR5cGVcIjpcIjEwMTAwM1wifSIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE2Nzk1NDMzODMsImF1dGhvcml0aWVzIjpbInRlc3QiXSwianRpIjoiZWRkNmI4ZWYtZjNlYS00ZDU1LTg1M2ItZTRkMzU1NjQwNzk4IiwiY2xpZW50X2lkIjoiWGNXZWJBcHAifQ.j0YXQq7M1FD5v8g45EypDcpmemrnMhsdpcjRk9yZrnI
 
 
+### 密码模式登录
+POST {{auth_host}}/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&grant_type=password&username={"username":"admin","password":"111111",,"authType":"password"}
