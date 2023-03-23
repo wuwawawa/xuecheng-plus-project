@@ -48,29 +48,27 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
 
     @Override
-    public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto courseParamsDto) {
-
-        //拼装查询条件
+    @Transactional
+    public PageResult<CourseBase> queryCourseBaseList(Long companyId, PageParams pageParams, QueryCourseParamsDto queryCourseParams) {
+        // 构建条件查询器
         LambdaQueryWrapper<CourseBase> queryWrapper = new LambdaQueryWrapper<>();
-        //根据名称模糊查询,在sql中拼接 course_base.name like '%值%'
-        queryWrapper.like(StringUtils.isNotEmpty(courseParamsDto.getCourseName()), CourseBase::getName, courseParamsDto.getCourseName());
-        //根据课程审核状态查询 course_base.audit_status = ?
-        queryWrapper.eq(StringUtils.isNotEmpty(courseParamsDto.getAuditStatus()), CourseBase::getAuditStatus, courseParamsDto.getAuditStatus());
-        // 根据课程发布状态
-        queryWrapper.eq(StringUtils.isNotEmpty(courseParamsDto.getPublishStatus()), CourseBase::getStatus, courseParamsDto.getPublishStatus());
-
-        //创建page分页参数对象，参数：当前页码，每页记录数
+        queryWrapper.eq(CourseBase::getCompanyId, companyId);
+        // 构建查询条件：按照课程名称模糊查询
+        queryWrapper.like(StringUtils.isNotEmpty(queryCourseParams.getCourseName()), CourseBase::getName, queryCourseParams.getCourseName());
+        // 构建查询条件，按照课程审核状态查询
+        queryWrapper.eq(StringUtils.isNotEmpty(queryCourseParams.getAuditStatus()), CourseBase::getAuditStatus, queryCourseParams.getAuditStatus());
+        // 构建查询条件，按照课程发布状态查询
+        queryWrapper.eq(StringUtils.isNotEmpty(queryCourseParams.getPublishStatus()), CourseBase::getStatus, queryCourseParams.getPublishStatus());
+        // 分页对象
         Page<CourseBase> page = new Page<>(pageParams.getPageNo(), pageParams.getPageSize());
-        //开始进行分页查询
-        Page<CourseBase> pageResult = courseBaseMapper.selectPage(page, queryWrapper);
-        //数据列表
-        List<CourseBase> items = pageResult.getRecords();
-        //总记录数
-        long total = pageResult.getTotal();
-
-        //List<T> items, long counts, long page, long pageSize
-        PageResult<CourseBase> courseBasePageResult = new PageResult<CourseBase>(items, total, pageParams.getPageNo(), pageParams.getPageSize());
-        return courseBasePageResult;
+        // 查询数据内容获得结果
+        Page<CourseBase> pageInfo = courseBaseMapper.selectPage(page, queryWrapper);
+        // 获取数据列表
+        List<CourseBase> items = pageInfo.getRecords();
+        // 获取数据总条数
+        long counts = pageInfo.getTotal();
+        // 构建结果集
+        return new PageResult<>(items, counts, pageParams.getPageNo(), pageParams.getPageSize());
     }
 
     @Transactional
