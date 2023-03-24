@@ -1,7 +1,9 @@
 package com.xuecheng.content.api;
 
 import com.xuecheng.content.model.dto.CoursePreviewDto;
+import com.xuecheng.content.model.po.CoursePublish;
 import com.xuecheng.content.service.CoursePublishService;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,4 +54,12 @@ public class CoursePublishController {
         Long companyId = 1232141425L;
         coursePublishService.publishCourse(companyId, courseId);
     }
+
+    @ApiOperation("查询课程发布信息")
+    @GetMapping("/r/coursepublish/{courseId}")
+    public CoursePublish getCoursePublish(@PathVariable("courseId") Long courseId) {
+        return coursePublishService.getCoursePunlish(courseId);
+    }
+
+
 }

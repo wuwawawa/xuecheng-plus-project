@@ -253,4 +253,9 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         }
         return true;
     }
+
+    @Override
+    public CoursePublish getCoursePunlish(Long courseId) {
+        return coursePublishMapper.selectById(courseId);
+    }
 }

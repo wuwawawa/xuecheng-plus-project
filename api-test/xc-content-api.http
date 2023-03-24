@@ -49,3 +49,8 @@ GET {{gateway_host}}/content/teachplan/117/tree-nodes
 ### 删除课程
 DELETE {{gateway_host}}/content/course/87
 
+
+### 查询课程发布信息
+GET {{content_host}}/content/r/coursepublish/124
+Content-Type: application/json
+
