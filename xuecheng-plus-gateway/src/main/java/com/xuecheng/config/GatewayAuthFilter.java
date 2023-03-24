@@ -69,6 +69,7 @@ public class GatewayAuthFilter implements GlobalFilter, Ordered {
         //白名单放行
         for (String url : whitelist) {
             if (pathMatcher.match(url, requestUrl)) {
+                System.out.println("放行！！");
                 return chain.filter(exchange);
             }
         }

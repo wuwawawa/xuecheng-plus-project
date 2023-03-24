@@ -15,3 +15,22 @@ POST {{auth_host}}/auth/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpX
 
 ### 密码模式登录
 POST {{auth_host}}/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&grant_type=password&username={"username":"admin","password":"111111",,"authType":"password"}
+
+
+###修改密码
+POST {{gateway_host}}/auth/findpassword
+Content-Type: application/json
+
+{
+  "cellphone": "",
+  "email": "1606441608@qq.com",
+  "checkcodekey": "",
+  "checkcode": "BYIch",
+  "confirmpwd": "123456",
+  "password": "123456"
+}
+
+
+###测试访问
+GET {{auth_host}}/auth/r/r4
+
