@@ -2,6 +2,7 @@ package com.xuecheng.auth.controller;
 
 import com.xuecheng.ucenter.mapper.XcUserMapper;
 import com.xuecheng.ucenter.model.dto.FindPswDto;
+import com.xuecheng.ucenter.model.dto.RegisterDto;
 import com.xuecheng.ucenter.model.po.XcUser;
 import com.xuecheng.ucenter.service.VerifyService;
 import io.swagger.annotations.ApiOperation;
@@ -50,12 +51,6 @@ public class LoginController {
     @PreAuthorize("hasAnyAuthority('p2')")
     public String r2() {
         return "访问r2资源";
-    }
-
-
-    @PostMapping("/findpassword")
-    public void findPassword(@RequestBody FindPswDto findPswDto) {
-        verifyService.findPassword(findPswDto);
     }
 
 
