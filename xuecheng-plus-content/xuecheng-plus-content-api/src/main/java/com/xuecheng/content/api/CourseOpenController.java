@@ -19,7 +19,7 @@ public class CourseOpenController {
     @GetMapping("/course/whole/{courseId}")
     public CoursePreviewDto getPreviewInfo(@PathVariable Long courseId) {
         // 获取课程预览信息
-        return coursePublishService.getCoursePreviewInfo(courseId);
+        return coursePublishService.getCoursePreviewInfoCache(courseId);
     }
 
 

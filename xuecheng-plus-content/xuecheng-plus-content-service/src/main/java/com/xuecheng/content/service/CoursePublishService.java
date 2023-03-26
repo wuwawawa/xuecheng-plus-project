@@ -17,6 +17,15 @@ public interface CoursePublishService {
      */
     CoursePreviewDto getCoursePreviewInfo(Long courseId);
 
+
+    /**
+     * 获取课程预览信息缓存
+     *
+     * @param courseId 课程id
+     * @return package com.xuecheng.content.model.dto.CoursePreviewDto;
+     */
+    CoursePreviewDto getCoursePreviewInfoCache(Long courseId);
+
     /**
      * 提交审核
      *

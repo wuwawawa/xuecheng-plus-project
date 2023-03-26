@@ -29,6 +29,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -63,10 +64,12 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     private MqMessageService mqMessageService;
     @Autowired
     private SearchServiceClient searchServiceClient;
-
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public CoursePreviewDto getCoursePreviewInfo(Long courseId) {
+
         CoursePreviewDto coursePreviewDto = new CoursePreviewDto();
         // 根据课程id查询 课程基本信息、营销信息
         CourseBaseInfoDto courseBaseInfo = courseBaseInfoService.getCourseBaseInfo(courseId);
@@ -75,7 +78,36 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         // 封装返回
         coursePreviewDto.setCourseBase(courseBaseInfo);
         coursePreviewDto.setTeachplans(teachplanDtoList);
+
+
         return coursePreviewDto;
+    }
+
+    @Override
+    public CoursePreviewDto getCoursePreviewInfoCache(Long courseId) {
+
+        // 1. 先从缓存中查询
+        Object courseCacheJson = redisTemplate.opsForValue().get("coursePreviewInfo:" + courseId);
+        // 2. 如果缓存里有，直接返回
+        if (courseCacheJson != null) {
+            String json = courseCacheJson.toString();
+            CoursePreviewDto coursePreviewDto = JSON.parseObject(json, CoursePreviewDto.class);
+            return coursePreviewDto;
+        } else {
+            CoursePreviewDto coursePreviewDto = new CoursePreviewDto();
+            // 根据课程id查询 课程基本信息、营销信息
+            CourseBaseInfoDto courseBaseInfo = courseBaseInfoService.getCourseBaseInfo(courseId);
+            // 根据课程id，查询课程计划
+            List<TeachplanDto> teachplanDtoList = teachplanService.findTeachplanTree(courseId);
+            // 封装返回
+            coursePreviewDto.setCourseBase(courseBaseInfo);
+            coursePreviewDto.setTeachplans(teachplanDtoList);
+            // 3.1 将查询结果缓存
+            redisTemplate.opsForValue().set("coursePreviewInfo:" + courseId, JSON.toJSONString(coursePreviewDto));
+
+            return coursePreviewDto;
+        }
+
     }
 
     @Transactional
